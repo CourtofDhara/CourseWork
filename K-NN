@@ -1,0 +1,67 @@
+import numpy as np
+from scipy.stats import mode
+from scipy.io import loadmat
+import time
+import matplotlib.pyplot as plt
+
+# --- Load Data ---
+# (Face recognition dataset)
+xTr, yTr, xTe, yTe = loaddata("faces.mat")
+
+plt.figure(figsize=(9, 6))
+plotfaces(xTr[:9, :])
+
+# ----------------------------------------
+# Function: l2distance
+# Use Case: Computes the Euclidean distance matrix between two sets of vectors.
+# Returns an [n x m] distance matrix where each entry D(i, j) is the distance
+# between training sample i and test sample j.
+# ----------------------------------------
+# (Assumes l2distance is defined in helper module or included elsewhere)
+
+# ----------------------------------------
+# Function: findknn
+# Use Case: Finds the indices and distances of the k-nearest neighbors in xTr for each point in xTe.
+# Returns:
+# - I: Indices of the k nearest neighbors [k x m]
+# - D: Corresponding distances [k x m]
+# ----------------------------------------
+def findknn(xTr, xTe, k):
+    distances = l2distance(xTr, xTe)
+    sorted_indices = np.argsort(distances, axis=0)
+    I = sorted_indices[:k, :]
+    sorted_distances = np.sort(distances, axis=0)
+    D = sorted_distances[:k, :]
+    return I, D
+
+# ----------------------------------------
+# Function: accuracy
+# Use Case: Calculates the classification accuracy as the fraction of correct predictions.
+# Inputs:
+# - truth: Ground truth labels
+# - preds: Predicted labels
+# Returns:
+# - accur: Accuracy as a scalar between 0 and 1
+# ----------------------------------------
+def accuracy(truth, preds):
+    accur = np.mean(truth == preds)
+    return accur
+
+# ----------------------------------------
+# Function: knnclassifier
+# Use Case: Implements the k-Nearest Neighbors classifier.
+# Inputs:
+# - xTr: Training data
+# - yTr: Training labels
+# - xTe: Test data
+# - k: Number of neighbors to consider
+# Returns:
+# - preds: Predicted labels for each test sample
+# ----------------------------------------
+def knnclassifier(xTr, yTr, xTe, k):
+    yTr = yTr.flatten()
+    I, _ = findknn(xTr, xTe, k)
+    neighbor_labels = yTr[I]
+    preds, _ = mode(neighbor_labels, axis=0)
+    preds = preds.flatten()
+    return preds
