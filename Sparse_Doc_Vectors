@@ -1,0 +1,134 @@
+# Creating Sparse Document Vectors
+# Completed functions with descriptions and use cases for each.
+
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+
+# ------------------------------------------------------
+# Function 1: Create Count-Based Document-Term Matrix (DTM)
+# ------------------------------------------------------
+def GetDTM(LsSents, stop_words=None, min_df=1, max_df=1.0, max_features=None) -> pd.DataFrame:
+    """
+    Generate a count-based Document-Term Matrix (DTM) using CountVectorizer.
+    - Input: list of sentences (documents).
+    - Output: DataFrame where columns are words, rows are sentences, and values are word counts.
+    - Use Case: Foundation for text analysis, converting text into structured numerical format.
+    """
+    vect = CountVectorizer(stop_words=stop_words, min_df=min_df, max_df=max_df, max_features=max_features, lowercase=True)
+    DTM = vect.fit_transform(LsSents)
+    df = pd.DataFrame(DTM.toarray(), columns=vect.get_feature_names(), index=LsSents)
+    return df
+
+# ------------------------------------------------------
+# Function 2: Calculate Fraction of nValue Elements (Sparsity)
+# ------------------------------------------------------
+def GetFrac(dfDTM, nValue=0) -> float:
+    """
+    Calculate the fraction of elements equal to nValue in the DTM.
+    - Input: DTM as DataFrame, value of interest (default = 0).
+    - Output: Fraction of the total elements that match nValue.
+    - Use Case: Measure sparsity or density of the matrix.
+    """
+    match_count = (dfDTM.values == nValue).sum()
+    return match_count / dfDTM.size
+
+# ------------------------------------------------------
+# Function 3: Most Common Words (Total Word Count)
+# ------------------------------------------------------
+def MostCommonWords1(dfDTM, n=5) -> [[str, int], ...]:
+    """
+    Identify the top n most frequent words based on total word counts.
+    - Use Case: Understand which words dominate the corpus overall.
+    """
+    word_counts = dfDTM.sum()
+    df_counts = word_counts.reset_index()
+    df_counts.columns = ['word', 'count']
+    df_sorted = df_counts.sort_values(by=['count', 'word'], ascending=[False, True])
+    return df_sorted.head(n).values.tolist()
+
+# ------------------------------------------------------
+# Function 4: Most Common Words by Document Occurrence
+# ------------------------------------------------------
+def MostCommonWords2(dfDTM, n=5) -> [[str, int], ...]:
+    """
+    Count the number of documents in which each word appears at least once.
+    - Use Case: Identify words that are widely used across many documents (not just repeated locally).
+    """
+    df = dfDTM.copy()
+    df[df > 0] = 1  # Convert counts to binary presence/absence
+    return MostCommonWords1(df, n)
+
+# ------------------------------------------------------
+# Function 5: Most Common Words by Max Count in a Single Document
+# ------------------------------------------------------
+def MostCommonWords3(dfDTM, n=5) -> [[str, int], ...]:
+    """
+    Identify the top n words based on the highest count in any single document.
+    - Use Case: Spot words that spike locally in individual documents.
+    """
+    word_max = dfDTM.max()
+    df_max = word_max.reset_index()
+    df_max.columns = ['word', 'count']
+    df_sorted = df_max.sort_values(by=['count', 'word'], ascending=[False, True])
+    return df_sorted.head(n).values.tolist()
+
+# ------------------------------------------------------
+# Function 6: Sentence with Most Duplicates of a Word
+# ------------------------------------------------------
+def SentWithMostDups(dfDTM, sWord='depth') -> str:
+    """
+    Return the sentence (row index) with the most occurrences of a specific word.
+    - Use Case: Quickly find the document where a word is most heavily used.
+    """
+    df = dfDTM.copy()
+    if sWord not in df.columns:
+        return None
+    word_counts = df[sWord]
+    df_word = pd.DataFrame({'sentence': word_counts.index, 'count': word_counts.values})
+    df_sorted = df_word.sort_values(by=['count', 'sentence'], ascending=[False, True])
+    return df_sorted.iloc[0]['sentence']
+
+# ------------------------------------------------------
+# Function 7: Convert Count DTM to TF-IDF Weighted DTM
+# ------------------------------------------------------
+def GetTFIDF(dfDTM, use_idf=True, smooth_idf=True) -> pd.DataFrame:
+    """
+    Convert a count-based DTM into a TF-IDF weighted DTM.
+    - Use Case: Adjust word importance based on global document frequency.
+    """
+    df = dfDTM.copy()
+    tfidf = TfidfTransformer(use_idf=use_idf, smooth_idf=smooth_idf)
+    tfidf_matrix = tfidf.fit_transform(df.values)
+    df_tfidf = pd.DataFrame(tfidf_matrix.toarray(), index=df.index, columns=df.columns)
+    return df_tfidf
+
+# ------------------------------------------------------
+# Function 8: Identify Most Important Words (Peak TF-IDF)
+# ------------------------------------------------------
+def MostImportantWords(dfDTM, n=5) -> [[str, int], ...]:
+    """
+    Identify the top n words with the highest peak TF-IDF scores.
+    - Use Case: Highlight words that are highly significant in at least one document.
+    """
+    max_scores = dfDTM.max()
+    df_max = max_scores.reset_index()
+    df_max.columns = ['word', 'score']
+    df_sorted = df_max.sort_values(by=['score', 'word'], ascending=[False, True])
+    return df_sorted.head(n).values.tolist()
+
+# ------------------------------------------------------
+# Function 9: Identify Least Important Words (Auto Stopwords)
+# ------------------------------------------------------
+def LeastImportantWords(dfDTM, n=5) -> [[str, int], ...]:
+    """
+    Identify words with the lowest non-zero TF-IDF scores as auto stopwords.
+    - Use Case: Auto-detect corpus-specific stopwords that are too generic.
+    """
+    df = dfDTM.copy()
+    df_no_zero = df.replace(0, np.nan)  # Ignore zeros during min calculation
+    min_scores = df_no_zero.min()
+    df_min = min_scores.reset_index()
+    df_min.columns = ['word', 'score']
+    df_sorted = df_min.sort_values(by=['score', 'word'], ascending=[True, True])
+    return df_sorted.head(n).values.tolist()
