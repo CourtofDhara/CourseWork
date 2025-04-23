@@ -3,6 +3,7 @@
 Function | Purpose
 
 📂 Sparse Document Vectors
+Function | Purpose
 GetDTM() | Creates a count-based Document-Term Matrix (DTM) using CountVectorizer.
 GetFrac() | Calculates the fraction of elements matching a given value (e.g., sparsity).
 MostCommonWords1() | Finds the top n most frequent words by total count.
