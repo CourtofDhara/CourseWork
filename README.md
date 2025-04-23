@@ -1,7 +1,8 @@
 ## 🛠️ Function List
 
-### 📂 **Sparse Document Vectors**
 <details>
+<summary>📂 Sparse Document Vectors</summary>
+
 | Function               | Purpose                                                        |
 |------------------------|----------------------------------------------------------------|
 | `GetDTM()`              | Creates a count-based Document-Term Matrix (DTM) using `CountVectorizer`. |
@@ -13,11 +14,14 @@
 | `GetTFIDF()`            | Converts a count-based DTM into a TF-IDF weighted matrix.      |
 | `MostImportantWords()`  | Ranks words by their highest TF-IDF scores.                   |
 | `LeastImportantWords()` | Identifies low-weighted words (auto stopwords) based on minimum non-zero TF-IDF values. |
+
 </details>
+
 ---
 
-### 📂 **Dense Document Vectors**
 <details>
+<summary>📂 Dense Document Vectors</summary>
+
 | Function           | Purpose                                                           |
 |--------------------|-------------------------------------------------------------------|
 | `GetWV()`          | Retrieves the Word2Vec vector for a given word (lowercased). Returns a zero vector if the word is not found. |
@@ -26,11 +30,14 @@
 | `NN2()`            | Identifies the most similar pair of words in a list, based on cosine similarity. |
 | `NNExc()`          | Returns the closest neighbor to a word, excluding specified exception terms. |
 | `NNChain()`        | Builds a chain of semantically similar words, adding one closest neighbor at a time until the chain reaches the target length. |
+
 </details>
+
 ---
 
-### 📂 **K-Nearest Neighbors (k-NN)**
 <details>
+<summary>📂 K-Nearest Neighbors (k-NN)</summary>
+
 | Function             | Purpose                                                         |
 |-----------------------|-----------------------------------------------------------------|
 | `findknn()`           | Finds indices and distances of k-nearest neighbors between training (`xTr`) and test (`xTe`) sets. |
@@ -40,4 +47,5 @@
 | `findknn_test2()`     | Confirms that output shapes from `findknn()` match expectations. |
 | `findknn_test3()`     | Validates 1-nearest neighbor accuracy against known results.   |
 | `findknn_test4()`     | Checks correctness of the 3-nearest neighbor scenario.         |
+
 </details>
