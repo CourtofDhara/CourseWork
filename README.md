@@ -35,3 +35,20 @@ Identifies the single pair of words within a given list that are the most semant
 Finds the most similar neighbor to a given word while excluding any words from a provided exception list. Useful for avoiding duplicates or unwanted terms in similarity searches.
 ### NNChain()
 Builds a sequential chain of semantically similar words. Starts with a given input word and adds the closest neighbor at each step, excluding all previously selected words. The chain continues until the specified length is reached or no valid neighbors remain.
+
+### K-NN   (K Nearest Neighbors)
+
+### findknn()
+Finds the indices and distances of the k-nearest neighbors in the training set (xTr) for each test point (xTe). Returns both the neighbor indices and their corresponding distances.
+### accuracy()
+Calculates the classification accuracy as the fraction of correct predictions. Compares the predicted labels (preds) to the true labels (truth).
+### knnclassifier()
+Implements the k-Nearest Neighbors (k-NN) classifier. Uses the neighbor indices from findknn() and applies majority voting (mode) to predict labels for each test point.
+### findknn_test1()
+Verifies that findknn() returns the correct data types (integer indices and float distances).
+### findknn_test2()
+Confirms that findknn() outputs matrices with the correct shapes based on the input sizes and chosen k.
+### findknn_test3()
+Validates the accuracy of findknn() for the 1-nearest neighbor case by comparing against known correct results.
+### findknn_test4()
+Checks the correctness of findknn() for the 3-nearest neighbor scenario, ensuring alignment with expected output.
