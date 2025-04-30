@@ -50,6 +50,8 @@
 
 </details>
 
+---
+
 <details>
 <summary>📂 Document-Vector Similarity Toolkit</summary>
 
