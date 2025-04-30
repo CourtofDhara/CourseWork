@@ -49,3 +49,19 @@
 | `findknn_test4()`     | Checks correctness of the 3-nearest neighbor scenario.         |
 
 </details>
+
+<details>
+<summary>📂 Document-Vector Similarity Toolkit</summary>
+
+| Function             | Purpose |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `LCV()`              | Returns lower-cased tokens that exist in the loaded GloVe model—prevents key errors and shrinks memory use. |
+| `DV()`               | Builds a **document vector** by averaging all word vectors that survive `LCV()`. Zero vector if none survive. |
+| `TopWords()`         | For a given document, finds the *n* unique words whose vectors are most cosine-similar to the document vector. |
+| `NN0()`              | Among candidate tokens, returns the word whose vector lies **closest to the origin** (smallest Euclidean norm). |
+| `CumMean()`          | Computes the cumulative (running) mean of a 1-D NumPy array without loops. |
+| `PickPosValues()`    | Pulls the value at a specified coordinate (`nPos`) from each word vector in a token list. |
+| `CumMeanInPos()`     | Builds a cumulative mean time-series for a chosen vector coordinate, optionally skipping the first `nSkip` (volatile) points. |
+| `NN_Pres()`          | Finds the U.S. inaugural speech **most similar** (cosine similarity) to a query speech using the centroid method above. |
+
+</details>
